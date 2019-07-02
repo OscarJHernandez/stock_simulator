@@ -15,10 +15,30 @@ class stock_simulator:
 		self.S = [1.0]
 		
 		for tk in range(1,steps+1):
-			r = np.random.normal(loc=self.mu,scale=self.sigma)
-			skp1 = (1.0+r)*self.S[tk-1]
+			
+			# The ratio S(t+1)/S(t) is log normal
+			s_ratio = np.exp(np.random.normal(loc=self.mu,scale=self.sigma))
+			r = s_ratio
+			
+			skp1 = r*self.S[tk-1]
 			self.S.append(skp1)
 			
+		self.S = np.asarray(self.S)
+		
+		return self.S
+	
+	def simulate_GBM(self,steps,mu=None):
+		
+		self.S=[1.0]
+		
+		for tk in range(1,steps+1):
+			sigma =  self.sigma
+			s_ratio = np.exp(np.random.normal(loc=self.mu-0.5*sigma**2,scale=sigma))
+			r = s_ratio
+			
+			skp1= r*self.S[tk-1]
+			self.S.append(skp1)
+		
 		self.S = np.asarray(self.S)
 		
 		return self.S
